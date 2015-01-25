@@ -34,4 +34,19 @@ maxMiddle (a,b,c)
 localMaxima :: [Integer] -> [Integer]
 localMaxima xs = catMaybes $ map maxMiddle (windows3 xs)
 
-histogram :: [Integer] -> String
+count :: [Int] -> Int -> Int
+count xs n = length $ filter (== n) xs
+
+drawcol :: Int -> Int -> String
+drawcol max n  = "=" ++ (replicate n '*') ++ (replicate fill ' ')
+  where fill = max - (2 + 2*n)
+
+prependn :: (Int, String) -> String
+prependn (n,s) = show n ++ s
+
+-- histogram :: [Integer] -> String
+histogram xs = concat $ map (++ "\n") $ reverse $ transpose enumedcols
+  where counts = map (count (map fromIntegral xs)) [0..9]
+        max = 2 * (maximum counts) + 2
+        cols = map (drawcol max) counts
+        enumedcols = map prependn (zip [0..] cols)
