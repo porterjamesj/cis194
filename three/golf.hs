@@ -44,7 +44,7 @@ drawcol max n  = "=" ++ (replicate n '*') ++ (replicate fill ' ')
 prependn :: (Int, String) -> String
 prependn (n,s) = show n ++ s
 
--- histogram :: [Integer] -> String
+histogram :: [Integer] -> String
 histogram xs = concat $ map (++ "\n") $ reverse $ transpose enumedcols
   where counts = map (count (map fromIntegral xs)) [0..9]
         max = 2 * (maximum counts) + 2
