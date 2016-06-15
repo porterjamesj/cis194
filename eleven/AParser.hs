@@ -36,7 +36,6 @@ instance Functor Parser where
 
 instance Applicative Parser where
   pure a = Parser (\s -> Just (a, s))
-
   (<*>) (Parser f) (Parser a) = Parser $ \s ->
     case f s of
       Just (f', rest) ->
