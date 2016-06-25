@@ -1,27 +1,31 @@
--- empty :: [a] -> [a]
--- empty _ = []
-
--- weird :: [a] -> [a]
--- weird [] = []
--- weird (x:xs) = [x]
+-- GADTs demo
 
 
--- f1 :: Maybe a -> [Maybe a]
--- f1 m = [m,m]
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE GADTSyntax #-}
+{-# LANGUAGE StandaloneDeriving #-}
 
--- f2 :: Maybe a -> [a]
--- f2 Nothing = []
--- f2 (Just x) = [x]
+-- data Option a = Some a
+--               | SomeInt Int
+--               | None
+--   deriving Show
 
--- the robber problem
+-- addOptions :: Option a -> Option a -> Option a
+-- addOptions (Some a1) (Some a2) = error "cant add non ints"
+-- -- addOptions (SomeInt i1) (SomeInt i2) = Some $ i1 + i2   -- doesnt compile
+-- addOptions None _ = None
+-- addOptions _ None = None
 
--- recursive edition (exponential)
+data GADTOption a where
+  Some :: a -> GADTOption a
+  SomeInt :: Int -> GADTOption Int
+  None :: GADTOption a
 
-maxMoney :: [Int] -> Int
-naiveMaxMoney (x:xs) = max robIt skipIt
-  where
-    robIt = x + (naiveMaxMoney $ drop 1 xs)
-    skipIt = naiveMaxMoney xs
-naiveMaxMoney [] = 0
+deriving instance Eq a => Eq (GADTOption a)
+deriving instance Show a => Show (GADTOption a)
 
--- dynamic programming edition (linear)
+addGADTOptions :: GADTOption a -> GADTOption a -> GADTOption a
+addGADTOptions None _ = None
+addGADTOptions _ None = None
+addGADTOptions (SomeInt i1) (SomeInt i2) = None
+addGADTOptions (Some _) (Some _) = error "cant add non ints"
